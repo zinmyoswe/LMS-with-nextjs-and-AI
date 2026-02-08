@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Header } from "@/components/Header";
 
 export default function Home() {
   return (
@@ -32,51 +33,7 @@ export default function Home() {
       />
 
       {/* Navigation */}
-      <header className="border-b border-[#d1d7dc] bg-white">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-[#A435F0]">
-              <GraduationCap className="size-5 text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-[#1c1d1f]">
-              LMSAI
-            </span>
-          </div>
-          <div className="hidden items-center gap-8 md:flex">
-            <Link
-              href="#features"
-              className="text-sm text-[#1c1d1f] transition hover:text-[#A435F0]"
-            >
-              Features
-            </Link>
-            <Link
-              href="#stats"
-              className="text-sm text-[#1c1d1f] transition hover:text-[#A435F0]"
-            >
-              Stats
-            </Link>
-            <Link
-              href="#pricing"
-              className="text-sm text-[#1c1d1f] transition hover:text-[#A435F0]"
-            >
-              Pricing
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              className="text-[#1c1d1f] hover:bg-[#f7f9fa] hover:text-[#A435F0]"
-            >
-              Sign in
-            </Button>
-            <Button
-              className="bg-[#A435F0] text-white hover:bg-[#8710d8]"
-            >
-              Sign up
-            </Button>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#f7f9fa] px-6 pt-20 pb-32 md:pt-28 md:pb-40">
