@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import {
   BookOpen,
   GraduationCap,
@@ -9,6 +10,9 @@ import {
   ArrowRight,
   Play,
   Star,
+  Rocket,
+  Crown,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +23,13 @@ import {
 } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 
+// import { sanityFetch } from "@/sanity/lib/live";
+// import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
+import { currentUser } from "@clerk/nextjs/server";
+
 export default function Home() {
+
+
   return (
     <div className="min-h-screen bg-white text-[#1c1d1f] antialiased">
       {/* Subtle grid background */}
@@ -193,40 +203,234 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section id="pricing" className="bg-white px-6 py-24">
-        <div className="mx-auto max-w-4xl">
-          <Card className="overflow-hidden border-[#d1d7dc] bg-[#f7f9fa]">
-            <div className="relative px-8 py-16 text-center md:px-16">
-              <div className="relative">
-                <h2 className="text-3xl font-bold tracking-tight text-[#1c1d1f] sm:text-4xl">
-                  Ready to transform your learning?
-                </h2>
-                <p className="mx-auto mt-4 max-w-xl text-[#6a6f73]">
-                  Join thousands of learners already mastering new skills. Start
-                  free—no credit card required.
+     
+
+      {/* Tiers Preview */}
+      <section className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                tier: "Free",
+                icon: Rocket,
+                color: "emerald",
+                gradient: "from-emerald-500 to-teal-600",
+                bgGlow: "bg-emerald-500/10",
+                borderColor: "border-emerald-500/20",
+                description: "Start your journey with foundational courses",
+                features: [
+                  "Core fundamentals",
+                  "Community access",
+                  "Basic projects",
+                ],
+              },
+              {
+                tier: "Pro",
+                icon: Crown,
+                color: "violet",
+                gradient: "from-violet-500 to-fuchsia-600",
+                bgGlow: "bg-violet-500/10",
+                borderColor: "border-violet-500/30",
+                description: "Level up with advanced, production-ready content",
+                features: [
+                  "All Free content",
+                  "Advanced courses",
+                  "Priority support",
+                  "Certificates",
+                ],
+                popular: true,
+              },
+              {
+                tier: "Ultra",
+                icon: Trophy,
+                color: "cyan",
+                gradient: "from-cyan-400 to-blue-600",
+                bgGlow: "bg-cyan-500/10",
+                borderColor: "border-cyan-500/20",
+                description:
+                  "Unlock the real gems - AI tutor & exclusive content",
+                features: [
+                  "Everything in Pro",
+                  "AI Learning Assistant",
+                  "Exclusive content",
+                  "1-on-1 sessions",
+                ],
+              },
+            ].map((plan) => (
+              <div
+                key={plan.tier}
+                className={`relative p-8 rounded-2xl ${plan.bgGlow} border ${plan.borderColor} ${plan.popular ? "ring-2 ring-violet-500/50" : ""} transition-all duration-300 hover:scale-[1.02]`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-xs font-semibold">
+                    Most Popular
+                  </div>
+                )}
+                <div
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center mb-4 shadow-lg`}
+                >
+                  <plan.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2">{plan.tier}</h3>
+                <p className="text-zinc-400 text-sm mb-6">{plan.description}</p>
+                <ul className="space-y-3">
+                  {plan.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-sm text-zinc-900"
+                    >
+                      <CheckCircle2
+                        className={`w-4 h-4 ${plan.color === "emerald" ? "text-emerald-400" : plan.color === "violet" ? "text-violet-400" : "text-cyan-400"}`}
+                      />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+
+        {/* Featured Courses */}
+        <section id="courses" className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Courses built for{" "}
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                real results
+              </span>
+            </h2>
+            <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
+              Each course is packed with modules and lessons designed to take
+              you from zero to job-ready.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* {courses.map((course) => (
+              <CourseCard
+                key={course.slug!.current!}
+                slug={{ current: course.slug!.current! }}
+                title={course.title}
+                description={course.description}
+                tier={course.tier}
+                thumbnail={course.thumbnail}
+                moduleCount={course.moduleCount}
+                lessonCount={course.lessonCount}
+              />
+            ))} */}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link href="/dashboard">
+            <Button
+              variant="outline"
+              className="border-0 bg-[#a435f0] text-white hover:bg-[#8710d8]"
+            >
+                View All Courses
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+
+        {/* Testimonials */}
+        <section
+          id="testimonials"
+          className="px-6 lg:px-12 py-20 max-w-7xl mx-auto"
+        >
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Students{" "}
+              <span className="bg-gradient-to-r from-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
+                love it
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Alex Chen",
+                role: "Junior Developer",
+                content:
+                  "Zin's teaching style is incredible. I went from knowing nothing to landing my first dev job in 6 months!",
+                avatar: "🧑‍💻",
+              },
+              {
+                name: "Sarah Miller",
+                role: "Freelancer",
+                content:
+                  "The Ultra tier is worth every penny. The exclusive content and 1-on-1 sessions transformed my career.",
+                avatar: "👩‍💼",
+              },
+              {
+                name: "James Wilson",
+                role: "CS Student",
+                content:
+                  "Best investment I've made. The Pro courses filled gaps my university courses never covered.",
+                avatar: "🎓",
+              },
+            ].map((testimonial) => (
+              <div
+                key={testimonial.name}
+                className="p-6 rounded-2xl bg-white border border-zinc-800"
+              >
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={`star-${testimonial.name}-${i}`}
+                      className="w-4 h-4 text-amber-400 fill-amber-400"
+                    />
+                  ))}
+                </div>
+                <p className="text-zinc-900 mb-6 leading-relaxed">
+                  &ldquo;{testimonial.content}&rdquo;
                 </p>
-                <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                  <Button
-                    size="lg"
-                    className="h-12 gap-2 bg-[#A435F0] px-8 text-base text-white hover:bg-[#8710d8]"
-                  >
-                    Create Free Account
-                    <ArrowRight className="size-4" />
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 border-[#1c1d1f] bg-transparent px-8 text-base text-[#1c1d1f] hover:bg-[#f7f9fa]"
-                  >
-                    Contact Sales
-                  </Button>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl">
+                    {testimonial.avatar}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">{testimonial.name}</p>
+                    <p className="text-xs text-zinc-500">{testimonial.role}</p>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+          <div className="relative rounded-3xl bg-gradient-to-br from-violet-600/20 via-fuchsia-600/10 to-cyan-600/20 border border-white/10 p-12 md:p-20 text-center overflow-hidden">
+            {/* Animated gradient border */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 blur-xl" />
+
+            <div className="relative z-10">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-500/30">
+                <Rocket className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                Ready to level up your skills?
+              </h2>
+              <p className="text-zinc-400 text-lg max-w-xl mx-auto mb-10">
+                Start with free courses or unlock everything with Pro and Ultra.
+                Your coding journey begins now.
+              </p>
+              <Link href="/pricing">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-xl shadow-violet-600/30 px-10 h-14 text-lg font-semibold"
+                >
+                  View Pricing
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
             </div>
-          </Card>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* Footer */}
       <footer className="border-t border-[#d1d7dc] bg-[#1c1d1f] px-6 py-12">
