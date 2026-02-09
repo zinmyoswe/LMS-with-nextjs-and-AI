@@ -26,6 +26,8 @@ import { Header } from "@/components/Header";
 import { sanityFetch } from "@/sanity/lib/live";
 import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
 import { currentUser } from "@clerk/nextjs/server";
+import { CourseCard } from "@/components/courses/CourseCard";
+
 
 export default async function Home() {
 
@@ -346,10 +348,17 @@ export default async function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {/* {courses.map((course) => (
+          {courses.map((course) => {
+             const slug = course.slug?.current;
+
+             if(!slug){
+              return null;
+             }
+             
+             return(
               <CourseCard
-                key={course.slug!.current!}
-                slug={{ current: course.slug!.current! }}
+                key={course._id}
+                slug={{ current: slug }}
                 title={course.title}
                 description={course.description}
                 tier={course.tier}
@@ -357,7 +366,11 @@ export default async function Home() {
                 moduleCount={course.moduleCount}
                 lessonCount={course.lessonCount}
               />
-            ))} */}
+             );
+
+              
+})}
+          
           </div>
 
           <div className="text-center mt-10">
